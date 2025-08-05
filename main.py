@@ -8,8 +8,13 @@ from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QImage, QPixmap, QFont
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QImage
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QSize
 import cv2
 import sys
 import mediapipe as mp
@@ -18,6 +23,14 @@ import math
 class PoseMentor(QMainWindow):
     def __init__(self):
         super().__init__()
+        # Set the app icon to posementor_icon.png
+        self.setWindowIcon(QIcon("icons/posementor_icon.png"))
+        iconLabel = QLabel()
+        iconPixmap = QPixmap("icons/posementor_icon.png")
+        # Bigger size here
+        iconPixmap = iconPixmap.scaled(48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation)  
+        iconLabel.setPixmap(iconPixmap)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowTitleHint | Qt.CustomizeWindowHint)
         self.setWindowTitle("PoseMentor -> AI-Powered Calisthenics Workout Form Corrector")
         self.setGeometry(100, 100, 900, 700)
 
@@ -31,40 +44,60 @@ class PoseMentor(QMainWindow):
         self.pose = self.mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
     def initUI(self):
-        title = QLabel("PoseMentor")
-        title.setFont(QFont("Arial", 22, QFont.Bold))
-        title.setAlignment(Qt.AlignLeft)
+        # PoseMentor title and top-left icon
+        iconLabel = QLabel()
+        iconPixmap = QPixmap("icons/posementor_icon.png")
+        iconPixmap = iconPixmap.scaled(85, 85, Qt.KeepAspectRatio, Qt.SmoothTransformation)  # Bigger icon
+        iconLabel.setPixmap(iconPixmap)
 
+        title = QLabel("PoseMentor")
+        title.setFont(QFont("Arial", 30, QFont.Bold))
+        title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+
+        # Create the workout dropdown and add items with bigger icons
         self.workoutBox = QComboBox()
-        self.workoutBox.addItems([
-            "Pushups", "Pullups", "Dips", "Bodyweight Squats",
-            "Plank", "Hollow Body Hold", "Superman Hold", "Hanging Leg Raises"
-        ])
+        self.workoutBox.setIconSize(QSize(48, 48))  # Ensures icons show at least as big as taskbar icon
+        self.workoutBox.addItem(QIcon("icons/pushups_icon.png"), "Pushups")
+        self.workoutBox.addItem(QIcon("icons/pullups_icon.png"), "Pullups")
+        self.workoutBox.addItem(QIcon("icons/dips_icon.png"), "Dips")
+        self.workoutBox.addItem(QIcon("icons/squats_icon.png"), "Bodyweight Squats")
+        self.workoutBox.addItem(QIcon("icons/plank_icon.png"), "Plank")
+        self.workoutBox.addItem(QIcon("icons/hollowbody_icon.png"), "Hollow Body Hold")
+        self.workoutBox.addItem(QIcon("icons/superman_icon.png"), "Superman Hold")
+        self.workoutBox.addItem(QIcon("icons/legraises_icon.png"), "Hanging Leg Raises")
+
+        # Start button
         self.startButton = QPushButton("Start Workout")
         self.startButton.clicked.connect(self.start_workout)
 
+        # Camera display area
         self.cameraLabel = QLabel()
         self.cameraLabel.setStyleSheet("background-color: black; border: 2px solid gray;")
         self.cameraLabel.setAlignment(Qt.AlignCenter)
-        self.cameraLabel.setFixedSize(640, 480)
+        self.cameraLabel.setFixedSize(720, 720)
 
+        # Feedback label
         self.feedbackLabel = QLabel("Select a workout and start.")
         self.feedbackLabel.setFont(QFont("Arial", 12))
         self.feedbackLabel.setAlignment(Qt.AlignCenter)
         self.feedbackLabel.setStyleSheet("color: green")
 
+        # Layout for top panel
         topPanel = QHBoxLayout()
-        topPanel.addWidget(title)
+        topPanel.addWidget(iconLabel)       # App icon
+        topPanel.addWidget(title)           # Title text
         topPanel.addStretch()
         topPanel.addWidget(QLabel("Select Workout:"))
         topPanel.addWidget(self.workoutBox)
         topPanel.addWidget(self.startButton)
 
+        # Center layout for camera
         centerLayout = QHBoxLayout()
         centerLayout.addStretch()
         centerLayout.addWidget(self.cameraLabel)
         centerLayout.addStretch()
 
+        # Main vertical layout
         mainLayout = QVBoxLayout()
         mainLayout.addLayout(topPanel)
         mainLayout.addSpacing(20)
@@ -72,9 +105,11 @@ class PoseMentor(QMainWindow):
         mainLayout.addSpacing(10)
         mainLayout.addWidget(self.feedbackLabel)
 
+        # Set layout to central widget
         container = QWidget()
         container.setLayout(mainLayout)
         self.setCentralWidget(container)
+
 
     def start_workout(self):
         self.feedbackLabel.setText(f"Form checking for {self.workoutBox.currentText()} started.")
@@ -91,7 +126,8 @@ class PoseMentor(QMainWindow):
         feedback = "Good form!"
         feedback_color = "green"
 
-        def coords(idx): return [landmarks[idx].x, landmarks[idx].y]
+        def coords(idx): 
+            return [landmarks[idx].x, landmarks[idx].y]
 
         if workout == "Pushups":
             shoulder = coords(12)
@@ -197,7 +233,6 @@ class PoseMentor(QMainWindow):
                 qimg = QImage(rgb_image.data, w, h, ch * w, QImage.Format_RGB888)
                 self.cameraLabel.setPixmap(QPixmap.fromImage(qimg))
 
-
     def closeEvent(self, event):
         if self.cap:
             self.cap.release()
@@ -207,161 +242,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = PoseMentor()
     window.show()
-    sys.exit(app.exec_()) 
-
-
-""" from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QLabel
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QVBoxLayout
-from PyQt5.QtWidgets import QHBoxLayout
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QImage, QPixmap, QFont
-from PyQt5.QtCore import Qt, QTimer
-import cv2
-import sys
-import mediapipe as mp
-import math
-
-class PoseMentor(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("PoseMentor - Calisthenics Workout Form Checker")
-        self.setGeometry(100, 100, 900, 700)
-
-        self.mp_pose = mp.solutions.pose
-        self.mp_drawing = mp.solutions.drawing_utils
-        self.pose = self.mp_pose.Pose()
-
-        self.cap = None
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_frame)
-
-        self.initUI()
-
-    def initUI(self):
-        # Title Label
-        title = QLabel("PoseMentor")
-        title.setFont(QFont("Arial", 22, QFont.Bold))
-        title.setAlignment(Qt.AlignLeft)
-
-        # Workout Selector
-        self.workoutBox = QComboBox()
-        self.workoutBox.addItems([
-            "Pushups", "Plank", "Squats"
-        ])
-        self.startButton = QPushButton("Start Workout")
-        self.startButton.clicked.connect(self.start_workout)
-
-        # Camera display
-        self.cameraLabel = QLabel()
-        self.cameraLabel.setStyleSheet("background-color: black; border: 2px solid gray;")
-        self.cameraLabel.setAlignment(Qt.AlignCenter)
-        self.cameraLabel.setFixedSize(640, 480)
-
-        # Feedback label
-        self.feedbackLabel = QLabel("Select a workout and start.")
-        self.feedbackLabel.setStyleSheet("color: green")
-        self.feedbackLabel.setAlignment(Qt.AlignCenter)
-
-        # Top panel (title + workout selection)
-        topPanel = QHBoxLayout()
-        topPanel.addWidget(title)
-        topPanel.addStretch()
-        topPanel.addWidget(QLabel("Select Workout:"))
-        topPanel.addWidget(self.workoutBox)
-        topPanel.addWidget(self.startButton)
-
-        # Center camera layout
-        centerLayout = QHBoxLayout()
-        centerLayout.addStretch()
-        centerLayout.addWidget(self.cameraLabel)
-        centerLayout.addStretch()
-
-        # Main layout
-        mainLayout = QVBoxLayout()
-        mainLayout.addLayout(topPanel)
-        mainLayout.addSpacing(20)
-        mainLayout.addLayout(centerLayout)
-        mainLayout.addSpacing(10)
-        mainLayout.addWidget(self.feedbackLabel)
-
-        # Set central widget
-        container = QWidget()
-        container.setLayout(mainLayout)
-        self.setCentralWidget(container)
-
-    def start_workout(self):
-        self.feedbackLabel.setText(f"Checking form for {self.workoutBox.currentText()}")
-        self.feedbackLabel.setStyleSheet("color: green")
-        if self.cap is None:
-            self.cap = cv2.VideoCapture(0)
-            self.timer.start(30)
-
-    def update_frame(self):
-        if self.cap and self.cap.isOpened():
-            ret, frame = self.cap.read()
-            if ret:
-                frame = cv2.flip(frame, 1)
-                rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                results = self.pose.process(rgb_image)
-
-                if results.pose_landmarks:
-                    self.mp_drawing.draw_landmarks(
-                        rgb_image, results.pose_landmarks, self.mp_pose.POSE_CONNECTIONS
-                    )
-                    workout = self.workoutBox.currentText()
-                    feedback, color = self.analyze_pose(results.pose_landmarks.landmark, workout)
-                    self.feedbackLabel.setText(feedback)
-                    self.feedbackLabel.setStyleSheet(f"color: {color}")
-
-                h, w, ch = rgb_image.shape
-                qimg = QImage(rgb_image.data, w, h, ch * w, QImage.Format_RGB888)
-                self.cameraLabel.setPixmap(QPixmap.fromImage(qimg))
-
-    def get_angle(self, a, b, c):
-        angle = math.degrees(math.atan2(c.y - b.y, c.x - b.x) -
-                             math.atan2(a.y - b.y, a.x - b.x))
-        return abs(angle) if angle > 0 else abs(angle + 360)
-
-    def analyze_pose(self, landmarks, workout):
-        if workout == "Pushups":
-            left_elbow = self.get_angle(landmarks[11], landmarks[13], landmarks[15])
-            right_elbow = self.get_angle(landmarks[12], landmarks[14], landmarks[16])
-            if left_elbow < 70 and right_elbow < 70:
-                return "Good pushup form.", "green"
-            else:
-                return "Elbows not bent enough. Lower your body.", "red"
-
-        elif workout == "Plank":
-            left_shoulder = landmarks[11]
-            left_hip = landmarks[23]
-            left_knee = landmarks[25]
-            angle = self.get_angle(left_shoulder, left_hip, left_knee)
-            if 160 < angle < 180:
-                return "Great plank posture.", "green"
-            else:
-                return "Hips not aligned. Keep your body straight.", "red"
-
-        elif workout == "Squats":
-            left_knee = self.get_angle(landmarks[23], landmarks[25], landmarks[27])
-            right_knee = self.get_angle(landmarks[24], landmarks[26], landmarks[28])
-            if left_knee < 100 and right_knee < 100:
-                return "Nice squat depth!", "green"
-            else:
-                return "Go deeper in your squat.", "red"
-
-        return "Pose detection running...", "gray"
-
-    def closeEvent(self, event):
-        if self.cap:
-            self.cap.release()
-        event.accept()
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = PoseMentor()
-    window.show()
-    sys.exit(app.exec_()) """
+    sys.exit(app.exec_())
