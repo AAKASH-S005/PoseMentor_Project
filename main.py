@@ -56,19 +56,32 @@ class PoseMentor(QMainWindow):
 
         # Create the workout dropdown and add items with bigger icons
         self.workoutBox = QComboBox()
-        self.workoutBox.setIconSize(QSize(48, 48))  # Ensures icons show at least as big as taskbar icon
+        # Ensures icons show at least as big as taskbar icon
+        self.workoutBox.setIconSize(QSize(48, 48))
+        # Pushups
         self.workoutBox.addItem(QIcon("icons/pushups_icon.png"), "Pushups")
+        # Pullups
         self.workoutBox.addItem(QIcon("icons/pullups_icon.png"), "Pullups")
-        self.workoutBox.addItem(QIcon("icons/dips_icon.png"), "Dips")
+        # Parallel Dips
+        self.workoutBox.addItem(QIcon("icons/dips_icon.png"), "Parallel Dips")
+        # BodyWeight Squats
         self.workoutBox.addItem(QIcon("icons/squats_icon.png"), "Bodyweight Squats")
+        # Plank
         self.workoutBox.addItem(QIcon("icons/plank_icon.png"), "Plank")
+        # HollowBody Hold
         self.workoutBox.addItem(QIcon("icons/hollowbody_icon.png"), "Hollow Body Hold")
+        # SuperMan Hold
         self.workoutBox.addItem(QIcon("icons/superman_icon.png"), "Superman Hold")
+        # Hanging Leg Raises
         self.workoutBox.addItem(QIcon("icons/legraises_icon.png"), "Hanging Leg Raises")
 
-        # Start button
+       # Start button with icon
         self.startButton = QPushButton("Start Workout")
+        self.startButton.setIcon(QIcon("Icons/start_icon.png"))
+       # Set icon size on startButton
+        self.startButton.setIconSize(QSize(30, 30)) 
         self.startButton.clicked.connect(self.start_workout)
+
 
         # Camera display area
         self.cameraLabel = QLabel()
@@ -84,8 +97,10 @@ class PoseMentor(QMainWindow):
 
         # Layout for top panel
         topPanel = QHBoxLayout()
-        topPanel.addWidget(iconLabel)       # App icon
-        topPanel.addWidget(title)           # Title text
+        # App icon
+        topPanel.addWidget(iconLabel)    
+         # Title text   
+        topPanel.addWidget(title)          
         topPanel.addStretch()
         topPanel.addWidget(QLabel("Select Workout:"))
         topPanel.addWidget(self.workoutBox)
