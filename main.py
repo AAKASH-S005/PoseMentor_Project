@@ -2,7 +2,7 @@ import os
 os.environ['QT_OPENGL'] = 'software'
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QLabel
+from  PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QVBoxLayout
@@ -24,11 +24,11 @@ class PoseMentor(QMainWindow):
     def __init__(self):
         super().__init__()
         # Set the app icon to posementor_icon.png
-        self.setWindowIcon(QIcon("icons/posementor_icon.png"))
+        self.setWindowIcon(QIcon("Icons/posementor_icon.png"))
         iconLabel = QLabel()
-        iconPixmap = QPixmap("icons/posementor_icon.png")
+        iconPixmap = QPixmap("Icons/posementor_icon.png")
         # Bigger size here
-        iconPixmap = iconPixmap.scaled(48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation)  
+        iconPixmap = iconPixmap.scaled(48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         iconLabel.setPixmap(iconPixmap)
         self.setWindowFlags(self.windowFlags() | Qt.WindowTitleHint | Qt.CustomizeWindowHint)
         self.setWindowTitle("PoseMentor -> AI-Powered Calisthenics Workout Form Corrector")
@@ -44,52 +44,53 @@ class PoseMentor(QMainWindow):
         self.pose = self.mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
     def initUI(self):
-        # PoseMentor title and top-left icon
+        # PsoeMentor title and top-left icon
         iconLabel = QLabel()
-        iconPixmap = QPixmap("icons/posementor_icon.png")
-        iconPixmap = iconPixmap.scaled(85, 85, Qt.KeepAspectRatio, Qt.SmoothTransformation)  # Bigger icon
+        iconPixmap = QPixmap("Icons/posementor_icon.png")
+        iconPixmap = iconPixmap.scaled(85, 85, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         iconLabel.setPixmap(iconPixmap)
 
+        # Logo and Title
         title = QLabel("PoseMentor")
         title.setFont(QFont("Arial", 30, QFont.Bold))
         title.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
 
-        # Create the workout dropdown and add items with bigger icons
+        #Create the workout dropdown and add items with bigger icons
         self.workoutBox = QComboBox()
-        # Ensures icons show at least as big as taskbar icon
+        # Ensures icons show 
         self.workoutBox.setIconSize(QSize(48, 48))
-        # Pushups
-        self.workoutBox.addItem(QIcon("icons/pushups_icon.png"), "Pushups")
-        # Pullups
-        self.workoutBox.addItem(QIcon("icons/pullups_icon.png"), "Pullups")
+        # PushUps
+        self.workoutBox.addItem(QIcon("Icons/pushups_icon.png"), "Pushups")
+        # PullUps
+        self.workoutBox.addItem(QIcon("Icons/pullups_icon.png"), "Pullups")
         # Parallel Dips
-        self.workoutBox.addItem(QIcon("icons/dips_icon.png"), "Parallel Dips")
+        self.workoutBox.addItem(QIcon("Icons/dips_icon.png"), "Parallel Dips")
         # BodyWeight Squats
-        self.workoutBox.addItem(QIcon("icons/squats_icon.png"), "Bodyweight Squats")
+        self.workoutBox.addItem(QIcon("Icons/squats_icon.png"), "Bodyweight Squats")
         # Plank
-        self.workoutBox.addItem(QIcon("icons/plank_icon.png"), "Plank")
+        self.workoutBox.addItem(QIcon("Icons/plank_icon.png"), "Plank")
         # HollowBody Hold
-        self.workoutBox.addItem(QIcon("icons/hollowbody_icon.png"), "Hollow Body Hold")
-        # SuperMan Hold
-        self.workoutBox.addItem(QIcon("icons/superman_icon.png"), "Superman Hold")
+        self.workoutBox.addItem(QIcon("Icons/hollowbody_icon.png"), "Hollow Body Hold")
+        # Superman Hold
+        self.workoutBox.addItem(QIcon("Icons/superman_icon.png"), "Superman Hold")
         # Hanging Leg Raises
-        self.workoutBox.addItem(QIcon("icons/legraises_icon.png"), "Hanging Leg Raises")
+        self.workoutBox.addItem(QIcon("Icons/legraises_icon.png"), "Hanging Leg Raises")
 
-       # Start button with icon
+        # Start your Workout
         self.startButton = QPushButton("Start Workout")
         self.startButton.setIcon(QIcon("Icons/start_icon.png"))
-       # Set icon size on startButton
+        # Set ison size on startbutton
         self.startButton.setIconSize(QSize(30, 30)) 
         self.startButton.clicked.connect(self.start_workout)
 
-
-        # Camera display area
+        # Camera Display area
+        # Camera Scanner Background
         self.cameraLabel = QLabel()
         self.cameraLabel.setStyleSheet("background-color: black; border: 2px solid gray;")
         self.cameraLabel.setAlignment(Qt.AlignCenter)
         self.cameraLabel.setFixedSize(720, 720)
-
-        # Feedback label
+        
+        #Feedback label
         self.feedbackLabel = QLabel("Select a workout and start.")
         self.feedbackLabel.setFont(QFont("Arial", 12))
         self.feedbackLabel.setAlignment(Qt.AlignCenter)
@@ -97,16 +98,16 @@ class PoseMentor(QMainWindow):
 
         # Layout for top panel
         topPanel = QHBoxLayout()
-        # App icon
+        # Add icon
         topPanel.addWidget(iconLabel)    
-         # Title text   
+        # Title text
         topPanel.addWidget(title)          
         topPanel.addStretch()
         topPanel.addWidget(QLabel("Select Workout:"))
         topPanel.addWidget(self.workoutBox)
         topPanel.addWidget(self.startButton)
 
-        # Center layout for camera
+        # Central layout for camera
         centerLayout = QHBoxLayout()
         centerLayout.addStretch()
         centerLayout.addWidget(self.cameraLabel)
@@ -125,7 +126,7 @@ class PoseMentor(QMainWindow):
         container.setLayout(mainLayout)
         self.setCentralWidget(container)
 
-
+    # Workout analyser and initialiser
     def start_workout(self):
         self.feedbackLabel.setText(f"Form checking for {self.workoutBox.currentText()} started.")
         self.feedbackLabel.setStyleSheet("color: green")
@@ -133,97 +134,136 @@ class PoseMentor(QMainWindow):
             self.cap = cv2.VideoCapture(0)
             self.timer.start(30)
 
+    # Angle Monitoring
     def get_angle(self, a, b, c):
         ang = math.degrees(math.atan2(c[1]-b[1], c[0]-b[0]) - math.atan2(a[1]-b[1], a[0]-b[0]))
         return abs(ang + 360) if ang < 0 else abs(ang)
-
-    def analyze_pose(self, landmarks, workout):
-        feedback = "Good form!"
+    
+    # Pose Analyser
+    def analyze_pose(self, lm, workout):
+        feedback = "Good form! Keep it up."
         feedback_color = "green"
-
-        def coords(idx): 
-            return [landmarks[idx].x, landmarks[idx].y]
+        def coords(i): 
+            return [lm[i].x, lm[i].y]
+        a = lambda i, j, k: self.get_angle(coords(i), coords(j), coords(k))
 
         if workout == "Pushups":
-            shoulder = coords(12)
-            elbow = coords(14)
-            wrist = coords(16)
-            angle = self.get_angle(shoulder, elbow, wrist)
-            if angle > 160:
-                feedback = "You're not lowering enough. Go deeper."
-                feedback_color = "red"
-            elif angle < 40:
-                feedback = "You're too low. Maintain a straight pushup."
-                feedback_color = "red"
+            e_angle = a(12, 14, 16)
+            h_angle = a(12, 24, 26)
+            s_y, h_y = lm[12].y, lm[24].y
 
-        elif workout == "Plank":
-            shoulder = coords(12)
-            hip = coords(24)
-            ankle = coords(28)
-            angle = self.get_angle(shoulder, hip, ankle)
-            if angle < 160:
-                feedback = "Body is not straight. Engage your core."
-                feedback_color = "red"
+            b_straight = abs(s_y - h_y) < 0.05
 
-        elif workout == "Bodyweight Squats":
-            hip = coords(24)
-            knee = coords(26)
-            ankle = coords(28)
-            angle = self.get_angle(hip, knee, ankle)
-            if angle > 150:
-                feedback = "You're not squatting deep enough."
-                feedback_color = "red"
-            elif angle < 60:
-                feedback = "Too deep. Avoid straining your knees."
-                feedback_color = "red"
+            if e_angle > 160:
+                feedback = "Not going low enough. Lower your chest and adjust your hips."
+            elif e_angle < 40:
+                feedback = "Too deep. Maintain a straight pushup."
+            elif h_angle < 150:
+                feedback = "Don't let your Hips sagging or piking. Tighten your core."
+            elif not b_straight:
+                feedback = "Keep your body straight like a Bridge."
 
-        elif workout == "Hollow Body Hold":
-            shoulder = coords(12)
-            hip = coords(24)
-            knee = coords(26)
-            angle = self.get_angle(shoulder, hip, knee)
-            if angle > 120:
-                feedback = "Tighten your core. Maintain the hollow shape."
-                feedback_color = "red"
-
-        elif workout == "Superman Hold":
-            shoulder = coords(11)
-            hip = coords(23)
-            ankle = coords(27)
-            angle = self.get_angle(shoulder, hip, ankle)
-            if angle < 140:
-                feedback = "Lift chest and legs higher."
-                feedback_color = "red"
+            if feedback != "Good form! Keep it up.": feedback_color = "red"
 
         elif workout == "Pullups":
-            shoulder = coords(12)
-            elbow = coords(14)
-            wrist = coords(16)
-            angle = self.get_angle(shoulder, elbow, wrist)
-            if angle > 160:
-                feedback = "Pull up higher. Elbows not bent enough."
-                feedback_color = "red"
+            e_angle = a(12, 14, 16)
+            c_y = lm[0].y
+            s_y = lm[12].y
+            swing = abs(lm[24].x - lm[23].x) > 0.1
 
-        elif workout == "Dips":
-            shoulder = coords(12)
-            elbow = coords(14)
-            wrist = coords(16)
-            angle = self.get_angle(shoulder, elbow, wrist)
-            if angle > 150:
-                feedback = "You're not dipping low enough."
-                feedback_color = "red"
-            elif angle < 60:
-                feedback = "Going too low. Avoid shoulder strain."
-                feedback_color = "red"
+            if e_angle > 150:
+                feedback = "Pull higher. Elbows too extended."
+            elif e_angle < 50:
+                feedback = "Too low. Control descent."
+            elif swing:
+                feedback = "Avoid swinging yourself. Control movement."
+            elif c_y > s_y:
+                feedback = "Your Chin not above bar."
+
+            if feedback != "Good form! Keep it up.": feedback_color = "red"
+
+        elif workout == "Parallel Dips":
+            e_angle = a(12, 14, 16)
+            tilt = abs(lm[12].x - lm[24].x) > 0.1
+            if e_angle > 150:
+                feedback = "Not dipping deep enough."
+            elif e_angle < 60:
+                feedback = "You're Too low. Risk of shoulder strain."
+            elif tilt:
+                feedback = "Keep your torso upright."
+            elif abs(lm[12].y - lm[14].y) > 0.15:
+                feedback = "Your Shoulders looks uneven."
+
+            if feedback != "Good form! Keep it up.": feedback_color = "red"
+
+        elif workout == "Bodyweight Squats":
+            k_angle = a(24, 26, 28)
+            b_angle = a(12, 24, 26)
+            knee_in = abs(lm[26].x - lm[28].x) > 0.15
+            feet_wide = abs(lm[27].x - lm[28].x) > 0.5
+
+            if k_angle > 150:
+                feedback = "You're Not squatting deep enough."
+            elif k_angle < 60:
+                feedback = "Too deep. Avoid knee strain."
+            elif b_angle < 150:
+                feedback = "Keep your back straighter."
+            elif not feet_wide:
+                feedback = "Spread your feet Slight more."
+
+            if feedback != "Good form! Keep it up.": feedback_color = "red"
+
+        elif workout == "Plank":
+            angle = a(12, 24, 28)
+            if angle < 160:
+                feedback = "Engage your core. Body not straight."
+            elif abs(lm[12].y - lm[14].y) > 0.1:
+                feedback = "Shoulders not aligned."
+            elif abs(lm[12].x - lm[14].x) > 0.1:
+                feedback = "Keep shoulders over wrists."
+            elif abs(lm[24].y - lm[26].y) > 0.1:
+                feedback = "Hips too high/low."
+
+            if feedback != "Good form! Keep it up.": feedback_color = "red"
+
+        elif workout == "Hollow Body Hold":
+            angle = a(12, 24, 26)
+            if angle > 120:
+                feedback = "Tighten your core."
+            elif lm[24].y > lm[12].y:
+                feedback = "Lift shoulders."
+            elif lm[28].y > lm[26].y:
+                feedback = "Lift legs slight higher."
+            elif abs(lm[24].y - lm[26].y) > 0.1:
+                feedback = "Bend knees less."
+
+            if feedback != "Good form! Keep it up.": feedback_color = "red"
+
+        elif workout == "Superman Hold":
+            angle = a(11, 23, 27)
+            if angle < 140:
+                feedback = "Lift chest and legs more."
+            elif abs(lm[11].y - lm[23].y) > 0.2:
+                feedback = "Arms too low."
+            elif abs(lm[27].y - lm[23].y) > 0.2:
+                feedback = "Legs too low."
+            elif abs(lm[0].y - lm[23].y) > 0.3:
+                feedback = "Neck not aligned."
+
+            if feedback != "Good form! Keep it up.": feedback_color = "red"
 
         elif workout == "Hanging Leg Raises":
-            hip = coords(24)
-            knee = coords(26)
-            ankle = coords(28)
-            angle = self.get_angle(hip, knee, ankle)
+            angle = a(24, 26, 28)
             if angle < 70:
-                feedback = "Raise your legs higher."
-                feedback_color = "red"
+                feedback = "Raise legs higher."
+            elif abs(lm[24].x - lm[23].x) > 0.1:
+                feedback = "Stop swinging."
+            elif abs(lm[28].x - lm[26].x) > 0.1:
+                feedback = "Control knees."
+            elif abs(lm[11].x - lm[12].x) > 0.1:
+                feedback = "Keep grip balanced."
+
+            if feedback != "Good form! Keep it up.": feedback_color = "red"
 
         return feedback, feedback_color
 
