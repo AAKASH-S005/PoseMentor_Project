@@ -1,4 +1,4 @@
-# 🤸‍♂️ PoseMentor - AI-Powered Calisthenics Form Checker
+# 🤸‍♂️ PoseMentor - AI-Powered Calisthenics Workout Form Checker
 
 **PoseMentor** is a real-time AI application that helps users correct their form in bodyweight workouts like pushups, planks, squats, dips, and more. Built using **PyQt5**, **OpenCV**, and **MediaPipe**, this tool is perfect for calisthenics enthusiasts and fitness learners.
 
